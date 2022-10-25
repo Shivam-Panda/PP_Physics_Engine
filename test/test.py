@@ -1,20 +1,22 @@
 import turtle
 
-wn = turtle.Screen()
-wn.setup(800, 800)
-wn.bgcolor("white")
-wn.title("Window")
+screen = turtle.Screen()
+screen.setup(500,500)
+screen.bgcolor('white')
 
-t = turtle.Turtle()
+# Makes Everything Work
+screen.tracer(0)
 
-t.penup()
-t.goto(100, 100)
-t.pendown()
-for i in range(4):
-    t.forward(100)
-    t.right(90)
+ball = turtle.Turtle()
+ball.speed(0)
+ball.shape("square")
+ball.color("black")
+ball.penup()
+ball.goto(0, 0)
 
 while True:
-    wn.update()
-    if input():
-        break
+    screen.update()
+    
+    y = ball.ycor()
+    y += 0.01
+    ball.sety(y)
