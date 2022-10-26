@@ -39,3 +39,10 @@ class Shape:
         y = self.t.ycor()
         y += interval
         self.t.sety(y)
+
+class Stop:
+    def __init__(self):
+        self.go = True
+
+    def end(self):
+        self.go = False

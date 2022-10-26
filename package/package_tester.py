@@ -1,7 +1,7 @@
 import threading
 import time
 
-from main import Shape, Window
+from main import Shape, Stop, Window
 
 w = Window(300, 300, "Testing", "white")
 
@@ -9,15 +9,14 @@ ball = Shape(1, 5, 'black', 'square', 0, 0)
 square = Shape(5, 1, "green", "square", 0, -200)
 # img = Arrow(1, 5, 0, 0)
 
-class Stop:
-    def __init__(self):
-        self.go = True
+objects = [ball, square]
 
-    def end(self):
-        self.go = False
 
 stoper_1 = Stop()
 stoper_2 = Stop()
+
+stoppers = [stoper_1, stoper_2]
+movements = ['hor', (2,1)]
 
 def sleeper_bool():
     time.sleep(5)
@@ -35,14 +34,24 @@ t2 = threading.Thread(target=sleeper_ender)
 t1.start()
 t2.start()
 
+def all_false(stoppers):
+    for i in stoppers:
+        if i.go is True:
+            return False
+    return True
+
 while True:
-    if stoper_1.go:
-        ball.horiz_move(0.1)
-
-    if stoper_2.go:
-        square.vertical_move(0.1)
-
-    if stoper_2.go is False and stoper_1.go is False:
+    for i in range(len(objects)):
+        if stoppers[i].go:
+            if movements[i] == 'hor':
+                objects[i].horiz_move(1)
+            elif movements[i] == 'ver':
+                objects[i].horiz_move(1)
+            elif type(movements[i]) is not "<class 'str'>":
+                objects[i].vertical_move(movements[i][0])
+                objects[i].horiz_move(movements[i][1])
+    
+    if all_false(stoppers):
         break
 
 if input():
