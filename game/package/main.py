@@ -2,17 +2,6 @@ import threading
 import turtle
 
 
-class Window:
-    def __init__(self, width, height, title, color):
-        self.wn = turtle.Screen()
-        self.wn.setup(width, height)
-        self.wn.title(title)
-        self.wn.bgcolor(color)
-
-    def update(self):
-        while True:
-            self.wn.update()
-
 class Circle:
     def __init__(self, radius, color, x, y):
         self.t = turtle.Turtle()
@@ -42,16 +31,16 @@ class Circle:
         else:
             self.x += slope
             self.y += 1
-            self.t.setx(self.t.xcor()+slope)
-            self.t.sety(self.t.ycor() + 1)
+            self.t.setx(self.t.xcor()+1)
+            self.t.sety(self.t.ycor() +slope)
 
 class Square:
-    def __init__(self, width, color, x, y):
+    def __init__(self, width, length, color, x, y):
         self.t = turtle.Turtle()
         self.width = width
         self.t.speed(0)
         self.t.shape("square")
-        self.t.shapesize(stretch_wid=width, stretch_len=width)
+        self.t.shapesize(stretch_wid=width, stretch_len=length)
         self.t.color(color)
         self.t.penup()
         self.x = x
@@ -74,8 +63,8 @@ class Square:
         else:
             self.x += slope
             self.y += 1
-            self.t.setx(self.t.xcor()+slope)
-            self.t.sety(self.t.ycor() + 1)
+            self.t.setx(self.t.xcor()+1)
+            self.t.sety(self.t.ycor() +slope)
             
 class Stop:
     def __init__(self):
@@ -85,11 +74,11 @@ class Stop:
         self.go = False
 
 def createTarget(x,y):
-    b5 = Circle(5, "black", x,y)
+    b5 = Circle(5, "red", x,y)
     b4 = Circle(4, "white", x,y)
-    b3 = Circle(3, "black", x,y)
+    b3 = Circle(3, "red", x,y)
     b2 = Circle(2, "white", x,y)
-    b1 = Circle(1, "black", x,y)
+    b1 = Circle(1, "red", x,y)
     return [b1, b2, b3, b4, b5, (x, y)]
 
 def check_collisions(obj, target):
