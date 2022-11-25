@@ -1,17 +1,11 @@
-def getter(name):
-    t = open('./game/data.txt').read()
-    vars_string = t.split('\n')
+import json
 
-    vars = {}
 
-    for i in vars_string:
-        s = i.split('=')
-        vars[s[0]] = s[1]
+def get_data(key):
+    data = json.loads(open('./game/data.json', 'r').read())
+    return data[key]
 
-    return vars[name]
-
-def setter(name, value):
-    t = open('./game/data.txt').read()
-    s = (f'{t}\n{name}={value}')
-    open('./game/data.txt', 'w').write(s)
-    
+def set_data(key, val):
+    data = json.loads(open('./game/data.json', 'r').read())
+    data[key] = val
+    open('./game/data.json', 'w').write(json.dumps(data, indent=4))

@@ -1,3 +1,0 @@
-WIDTH=500
-LENGTH=500 
- username=hhhhaaaa
