@@ -2,10 +2,16 @@ import json
 
 
 def get_data(key):
-    data = json.loads(open('./game/data.json', 'r').read())
+    f = open('./PE/game/data.json', 'r').read()
+    data = (json.loads(f))
     return data[key]
 
 def set_data(key, val):
-    data = json.loads(open('./game/data.json', 'r').read())
+    data = json.loads(open('./PE/game/data.json', 'r').read())
     data[key] = val
-    open('./game/data.json', 'w').write(json.dumps(data, indent=4))
+    f = open('./PE/game/data.json', 'w')
+    f.write(json.dumps(data, indent=4))
+    f.close()
+
+def clear_data():
+    open('./PE/game/data.json', 'w').write('{}')

@@ -1,15 +1,15 @@
 import threading
 import turtle
 
-from data_reader import getter
-from package.main import Square, createTarget
+from data_reader import get_data
+from package.main import Square
 
-WIDTH = int(getter('WIDTH'))
-HEIGHT = int(getter('HEIGHT'))
+WIDTH = int(get_data('WIDTH'))
+HEIGHT = int(get_data('HEIGHT'))
 
-X = int(getter('TARGET_Z'))
-Y = int(getter('TARGET_Y'))
-SLOPE = int(getter('YZ_SLOPE'))
+X = int(get_data('TARGET_Z'))
+Y = int(get_data('TARGET_Y'))
+SLOPE = int(get_data('YZ_SLOPE'))
 
 wn = turtle.Screen()
 wn.setup(WIDTH, HEIGHT)
@@ -22,7 +22,7 @@ s = Square(1, 1, "black", 0, 0)
 is_running = True
 
 while is_running:
-    shoot = bool(getter("SHOOT"))
+    shoot = bool(get_data("SHOOT"))
     if shoot:
         s.slope_movement(SLOPE)
     wn.update()
