@@ -24,8 +24,9 @@ def find_mean_point(approx):
     x_vals = []
     y_vals = []
     for i in approx:
-        x_vals.append(i[0])
-        y_vals.append(i[1])
+        if len(i) > 2:
+            x_vals.append(i[0])
+            y_vals.append(i[1])
     return (sum(x_vals)/4, sum(y_vals)/4)
 
 
@@ -82,20 +83,20 @@ while True:
             areas.append(area)
             cv2.drawContours(frame, [approx], 0, (0, 0, 0), 5)
 
-    if len(dists) > 1 and len(points) > 1:
-        z_dist = abs(dists[0]-dists[1])
-        x_points = []
-        y_points = []
-        for i in points:
-            x_points.append(i[0])
-            y_points.append(i[1])
-        x_dist = abs(x_points[0]-x_points[1])
-        y_dist = abs(y_points[0]-y_points[1])
+    # if len(dists) > 1 and len(points) > 1:
+    #     z_dist = abs(dists[0]-dists[1])
+    #     x_points = []
+    #     y_points = []
+    #     for i in points:
+    #         x_points.append(i[0])
+    #         y_points.append(i[1])
+    #     x_dist = abs(x_points[0]-x_points[1])
+    #     y_dist = abs(y_points[0]-y_points[1])
 
-        y_angle = math.atan(y_dist/x_dist)
-        z_angle = math.atan(z_dist/y_dist)
-        set_data('XY_SLOPE', y_angle)
-        set_data('YZ_SLOPE', z_angle)
+    #     y_angle = math.atan(y_dist/x_dist)
+    #     z_angle = math.atan(z_dist/y_dist)
+    #     set_data('XY_SLOPE', y_angle)
+    #     set_data('YZ_SLOPE', z_angle)
 
     cv2.imshow("Frame", frame)
     cv2.imshow("Mask", mask)

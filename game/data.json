@@ -1,10 +1,10 @@
 {
     "width": 500,
     "height": 500,
-    "TARGET_X": 155,
-    "TARGET_Y": 374,
-    "TARGET_Z": 332,
+    "TARGET_X": 8,
+    "TARGET_Y": -204,
+    "TARGET_Z": -250,
     "XY_SLOPE": 0,
     "YZ_SLOPE": 0,
-    "SHOOT": "true"
+    "SHOOT": false
 }

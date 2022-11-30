@@ -57,6 +57,9 @@ class Square:
         if slope == 'vert':
             self.y += 1
             self.t.sety(self.t.ycor() + 1)
+        elif slope == "-0":
+            self.x -= 1
+            self.t.setx(self.t.xcor()-1)
         elif slope == 0:
             self.x += 1
             self.t.setx(self.t.xcor()+1)

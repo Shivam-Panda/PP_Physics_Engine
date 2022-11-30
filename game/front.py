@@ -1,11 +1,12 @@
 import threading
+import time
 import turtle
 
 from data_reader import get_data
 from package.main import Square, createTarget
 
-WIDTH = int(get_data('WIDTH'))
-HEIGHT = int(get_data('HEIGHT'))
+WIDTH = int(get_data('width'))
+HEIGHT = int(get_data('height'))
 SLOPE = int(get_data('XY_SLOPE'))
 
 X = int(get_data('TARGET_X'))
