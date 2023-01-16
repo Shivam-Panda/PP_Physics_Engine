@@ -43,9 +43,13 @@ class Square:
         self.t.shapesize(stretch_wid=width, stretch_len=length)
         self.t.color(color)
         self.t.penup()
+        self.degrees = 0
         self.x = x
         self.y = y
         self.t.goto(x, y)
+
+    def turn(self, degree):
+        self.t.right(degree)
 
     def get_pos(self):
         return (self.x, self.y)

@@ -4,66 +4,79 @@ import cv2
 import numpy as np
 from data_reader import *
 
-y_int = 2848.499607135
-slope = -60.20202691675
-
-'''
-Data Values
-36" -> 681.218660968661
-24" -> 1403.6509615384616
-0" -> 2848.499607135
-
-y = -60.20202691675x + 2848.499607135
-'''
-
 objects = []
 
+i = 0
+
+k_constant = 500
+contact_time = 1
+mass = 1
+
 cap = cv2.VideoCapture(0)
+
+
+x_dists = []
+global bow_height
+
+_init = False
+
 
 def find_mean_point(approx):
     x_vals = []
     y_vals = []
     for i in approx:
-        if len(i) > 2:
-            x_vals.append(i[0])
-            y_vals.append(i[1])
-    return (sum(x_vals)/4, sum(y_vals)/4)
-
-
-def distance_from_camera(area):
-    return (area - y_int)/slope
+        x_vals.append(i[0][0])
+        y_vals.append(i[0][1])
+    return [sum(x_vals)/4, sum(y_vals)/4]
 
 def nothing(x):
     pass
 
+def shoot(x):
+    set_data('SHOOT', True)
+
+def init(x):
+    global _init 
+    _init = True
+    
+def average(l):
+    return sum(l)/len(l)
+
+
 cv2.namedWindow('result')
-cv2.createTrackbar('h_low', 'result', 0, 179, nothing)
-cv2.createTrackbar('s_low', 'result', 0, 255, nothing)
-cv2.createTrackbar('v_low', 'result', 0, 255, nothing)
+cv2.createTrackbar('Shoot', 'result', 0, 1, shoot)
+cv2.createTrackbar('Init', 'result', 0, 1, init)
 
-cv2.createTrackbar('h_upper', 'result', 0, 179, nothing)
-cv2.createTrackbar('s_upper', 'result', 0, 255, nothing)
-cv2.createTrackbar('v_upper', 'result', 0, 255, nothing)
+# cv2.createButton('Shoot', shoot)
+# cv2.createButton('Init', init)
+# cv2.createButton('Shoot', shoot)
+# cv2.createTrackbar('h_low', 'result', 0, 179, nothing)
+# cv2.createTrackbar('s_low', 'result', 0, 255, nothing)
+# cv2.createTrackbar('v_low', 'result', 0, 255, nothing)
 
-areas = []
+# cv2.createTrackbar('h_upper', 'result', 0, 179, nothing)
+# cv2.createTrackbar('s_upper', 'result', 0, 255, nothing)
+# cv2.createTrackbar('v_upper', 'result', 0, 255, nothing)
 
 while True:
-    _, frame = cap.read()
+    ret, frame = cap.read()
+    if not ret:
+        break
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    h_low=  cv2.getTrackbarPos('h_low', 'result')
-    s_low=  cv2.getTrackbarPos('s_low', 'result')
-    v_low=  cv2.getTrackbarPos('v_low', 'result')
+    # h_low=  cv2.getTrackbarPos('h_low', 'result')
+    # s_low=  cv2.getTrackbarPos('s_low', 'result')
+    # v_low=  cv2.getTrackbarPos('v_low', 'result')
 
-    h_upper =  cv2.getTrackbarPos('h_upper', 'result')
-    s_upper =  cv2.getTrackbarPos('s_upper', 'result')
-    v_upper =  cv2.getTrackbarPos('v_upper', 'result')
+    # h_upper =  cv2.getTrackbarPos('h_upper', 'result')
+    # s_upper =  cv2.getTrackbarPos('s_upper', 'result')
+    # v_upper =  cv2.getTrackbarPos('v_upper', 'result')
 
-    # low_orange = np.array([18,82,186])
-    # high_orange = np.array([22,144,255])
-    # 
-    low_orange = np.array([h_low, s_low, v_low])
-    high_orange = np.array([h_upper, s_upper, v_upper])
+    low_orange = np.array([23,73,0])
+    high_orange = np.array([32,255,255])
+    # # 
+    # low_orange = np.array([h_low, s_low, v_low])
+    # high_orange = np.array([h_upper, s_upper, v_upper])
 
     mask = cv2.inRange(hsv, low_orange, high_orange)
     kernel = np.ones((5,5), np.uint8)
@@ -71,34 +84,52 @@ while True:
 
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    dists = []
     points = []
-    
+
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        dists.append(distance_from_camera(area))
         approx = cv2.approxPolyDP(cnt, 0.05 * cv2.arcLength(cnt, True), True)
-        points.append(find_mean_point(approx))
         if area > 400 and len(approx) == 4:
-            areas.append(area)
+            points.append(find_mean_point(approx))
             cv2.drawContours(frame, [approx], 0, (0, 0, 0), 5)
 
-    # if len(dists) > 1 and len(points) > 1:
-    #     z_dist = abs(dists[0]-dists[1])
-    #     x_points = []
-    #     y_points = []
-    #     for i in points:
-    #         x_points.append(i[0])
-    #         y_points.append(i[1])
-    #     x_dist = abs(x_points[0]-x_points[1])
-    #     y_dist = abs(y_points[0]-y_points[1])
+    if len(points) == 3 and _init:
+        print("Initialization")
+        xs = []
+        ys = []
+        for i in points:
+            xs.append(i[0])
+            ys.append(i[1])
+        bow_height = max(ys) - min(ys)
+        j = ys.index(max(ys))
+        xps = []
+        for i in xs:
+            if i == j:
+                pass
+            else:
+                xps.append(i)
+        x_dists.append(abs(xps[0]-xps[1]))
+    elif len(points) == 2 and len(x_dists) >= 10:
+        x_points = []
+        y_points = []
+        for i in points:
+            x_points.append(i[0])
+            y_points.append(i[1])
+        x_dist = abs(x_points[0]-x_points[1])
+        y_dist = abs(y_points[0]-y_points[1])
 
-    #     y_angle = math.atan(y_dist/x_dist)
-    #     z_angle = math.atan(z_dist/y_dist)
-    #     set_data('XY_SLOPE', y_angle)
-    #     set_data('YZ_SLOPE', z_angle)
+        y_angle = math.atan(y_dist/x_dist)
 
-    cv2.imshow("Frame", frame)
+        x_more = abs((average(x_dists) - x_dist))
+        
+        F = k_constant*(math.sqrt(bow_height**2+x_more**2)-bow_height)*(math.cos(math.atan(bow_height/x_more)))
+        velocity = (F*contact_time)/mass
+        
+        set_data('XY_SLOPE', y_angle)
+        set_data('VELOCITY', velocity)
+    else:
+        pass
+
     cv2.imshow("Mask", mask)
 
     key = cv2.waitKey(1)

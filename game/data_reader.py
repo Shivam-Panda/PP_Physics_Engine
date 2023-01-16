@@ -2,9 +2,12 @@ import json
 
 
 def get_data(key):
-    f = open('./PE/game/data.json', 'r').read()
-    data = (json.loads(f))
-    return data[key]
+    try:
+        f = open('./PE/game/data.json', 'r').read()
+        data = (json.loads(f))
+        return data[key]
+    except:
+        return None
 
 def set_data(key, val):
     data = json.loads(open('./PE/game/data.json', 'r').read())
