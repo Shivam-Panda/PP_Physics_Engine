@@ -1,4 +1,5 @@
 import math
+import time
 
 import cv2
 import numpy as np
@@ -93,7 +94,8 @@ while True:
         approx = cv2.approxPolyDP(cnt, 0.05 * cv2.arcLength(cnt, True), True)
         if area > 400 and len(approx) == 4:
             points.append(find_mean_point(approx))
-            cv2.drawContours(frame, [approx], 0, (0, 0, 0), 5)
+            # print(find_mean_point(approx))
+            # cv2.drawContours(frame, [approx], 0, (0, 0, 0), 5)
 
     if len(points) == 3 and _init:
         print(began)
@@ -117,8 +119,13 @@ while True:
         for i in points:
             x_points.append(i[0])
             y_points.append(i[1])
-        x_dist = abs(x_points[0]-x_points[1])
-        y_dist = (y_points[0]-y_points[1])
+        x_dist = abs(x_points[1]-x_points[0])
+        y_dist = abs(y_points[1]-y_points[0])
+
+        if y_points[x_points.index(min(x_points))] > y_points[x_points.index(max(x_points))]:
+            y_dist *= -1
+        else:
+            pass
 
         y_angle = math.atan(y_dist/x_dist)
         print(math.degrees(y_angle))
