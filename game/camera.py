@@ -6,8 +6,6 @@ from data_reader import *
 
 objects = []
 
-i = 0
-
 k_constant = 500
 contact_time = 1
 mass = 1
@@ -19,7 +17,7 @@ x_dists = []
 global bow_height
 
 _init = False
-
+began = False
 
 def find_mean_point(approx):
     x_vals = []
@@ -42,14 +40,18 @@ def init(x):
 def average(l):
     return sum(l)/len(l)
 
+def begin(x):
+    global began
+    began = True
+    global _init
+    _init = False
+
 
 cv2.namedWindow('result')
 cv2.createTrackbar('Shoot', 'result', 0, 1, shoot)
 cv2.createTrackbar('Init', 'result', 0, 1, init)
+cv2.createTrackbar('Begin', 'result', 0, 1, begin)
 
-# cv2.createButton('Shoot', shoot)
-# cv2.createButton('Init', init)
-# cv2.createButton('Shoot', shoot)
 # cv2.createTrackbar('h_low', 'result', 0, 179, nothing)
 # cv2.createTrackbar('s_low', 'result', 0, 255, nothing)
 # cv2.createTrackbar('v_low', 'result', 0, 255, nothing)
@@ -72,8 +74,8 @@ while True:
     # s_upper =  cv2.getTrackbarPos('s_upper', 'result')
     # v_upper =  cv2.getTrackbarPos('v_upper', 'result')
 
-    low_orange = np.array([23,73,0])
-    high_orange = np.array([32,255,255])
+    low_orange = np.array([20,52,116])
+    high_orange = np.array([36,103,232])
     # # 
     # low_orange = np.array([h_low, s_low, v_low])
     # high_orange = np.array([h_upper, s_upper, v_upper])
@@ -94,7 +96,7 @@ while True:
             cv2.drawContours(frame, [approx], 0, (0, 0, 0), 5)
 
     if len(points) == 3 and _init:
-        print("Initialization")
+        print(began)
         xs = []
         ys = []
         for i in points:
@@ -109,27 +111,29 @@ while True:
             else:
                 xps.append(i)
         x_dists.append(abs(xps[0]-xps[1]))
-    elif len(points) == 2 and len(x_dists) >= 10:
+    elif len(points) == 2 and len(x_dists) >= 10 and began:
         x_points = []
         y_points = []
         for i in points:
             x_points.append(i[0])
             y_points.append(i[1])
         x_dist = abs(x_points[0]-x_points[1])
-        y_dist = abs(y_points[0]-y_points[1])
+        y_dist = (y_points[0]-y_points[1])
 
         y_angle = math.atan(y_dist/x_dist)
+        print(math.degrees(y_angle))
 
         x_more = abs((average(x_dists) - x_dist))
         
         F = k_constant*(math.sqrt(bow_height**2+x_more**2)-bow_height)*(math.cos(math.atan(bow_height/x_more)))
         velocity = (F*contact_time)/mass
         
-        set_data('XY_SLOPE', y_angle)
-        set_data('VELOCITY', velocity)
+        # set_data('XY_SLOPE', y_angle)
+        # set_data('VELOCITY', velocity)
     else:
         pass
 
+    # cv2.imshow('Frame', frame)
     cv2.imshow("Mask", mask)
 
     key = cv2.waitKey(1)
