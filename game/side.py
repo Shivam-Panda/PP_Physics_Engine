@@ -4,13 +4,16 @@ import time
 import turtle
 
 from data_reader import get_data
-from package.main import Square
+from package.main import Circle, Square
 
 WIDTH = int(get_data('width'))
 HEIGHT = int(get_data('height'))
 
-X = int(get_data('TARGET_X'))
-Y = int(get_data('TARGET_Y'))
+# X = int(get_data('TARGET_X'))
+# Y = int(get_data('TARGET_Y'))
+
+X = -200
+Y = 0
 
 wn = turtle.Screen()
 wn.setup(WIDTH, HEIGHT)
@@ -25,7 +28,7 @@ y = 0
 xa = 200
 ya = 0
 
-target = Square(5, 1, "red", X, Y)
+target = Circle(4, "red", X, Y)
 s = Square(4, 1, "orange", x, y)
 aimer = Square(1, 3, "brown", x-20, y)
 arrow = Square(1, 1, "black", xa, ya)
@@ -44,14 +47,28 @@ done = False
 global shot
 shot = False
 
+def check_collisions(x, y, X, Y):
+    dist = arrow.t.distance(target.t.pos())
+    print(dist)
+    if dist < (45):
+        return True
+    else:
+        return False
+
 while is_running:
     if done == False:
         X = get_data('XY_SLOPE')
         if X:
             final_slope = float()
             aimer.turn(float(math.degrees(X)))
+
+        v = get_data('XY_SLOPE')
+        if v:
+            velocity = float(v)
     if bool(get_data("SHOOT")):
-        velocity = float(get_data('VELOCITY'))
+        v = get_data('XY_SLOPE')
+        if v:
+            velocity = float(v)
         X = get_data('XY_SLOPE')
         if X:
             final_slope = float(X)
@@ -62,5 +79,11 @@ while is_running:
 
 while shot:
     arrow.x_inc(-1)
+    xa -= 1
+    ya += math.tan(final_slope)
     arrow.y_inc(math.tan(final_slope))
+    if check_collisions(xa, ya, get_data('TARGET_X'), get_data('TARGET_Y')):
+        break
     wn.update()
+
+print("You Won")

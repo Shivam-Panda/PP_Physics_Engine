@@ -5,6 +5,7 @@ from data_reader import *
 
 
 def init_file():
+    clear_data()
     set_data('width', 500)
     set_data('height', 500)
     set_data('TARGET_Y', random.randint(-250, 250))
@@ -20,6 +21,6 @@ def side():
 def camera():
     os.system("start /B start cmd.exe @cmd /k python PE/game/camera.py")
 
-# init_file
+init_file()
 camera()
 side()

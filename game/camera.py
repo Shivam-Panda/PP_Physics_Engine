@@ -76,8 +76,8 @@ while True:
     # s_upper =  cv2.getTrackbarPos('s_upper', 'result')
     # v_upper =  cv2.getTrackbarPos('v_upper', 'result')
 
-    low_orange = np.array([20,52,116])
-    high_orange = np.array([36,103,232])
+    low_orange = np.array([20,79,171])
+    high_orange = np.array([38,148,255])
     # # 
     # low_orange = np.array([h_low, s_low, v_low])
     # high_orange = np.array([h_upper, s_upper, v_upper])
