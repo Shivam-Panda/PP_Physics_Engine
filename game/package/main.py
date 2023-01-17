@@ -49,7 +49,8 @@ class Square:
         self.t.goto(x, y)
 
     def turn(self, degree):
-        self.t.right(degree)
+        self.t.right(degree - self.degrees)
+        self.degrees = degree
 
     def get_pos(self):
         return (self.x, self.y)
@@ -57,6 +58,14 @@ class Square:
     def get_size(self):
         return self.width
 
+    def x_inc(self, inc):
+        self.x += inc
+        self.t.setx(self.t.xcor()+inc)
+
+    def y_inc(self, inc):
+        self.y += inc
+        self.t.sety(self.t.ycor()+inc)
+        
     def slope_movement(self, slope):
         if slope == 'vert':
             self.y += 1

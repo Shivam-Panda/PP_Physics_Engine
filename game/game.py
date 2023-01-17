@@ -20,6 +20,6 @@ def side():
 def camera():
     os.system("start /B start cmd.exe @cmd /k python PE/game/camera.py")
 
-init_file()
-# camera()
-# side()
+# init_file
+camera()
+side()

@@ -32,6 +32,7 @@ def nothing(x):
     pass
 
 def shoot(x):
+    print("SHOOT")
     set_data('SHOOT', True)
 
 def init(x):
@@ -128,15 +129,14 @@ while True:
             pass
 
         y_angle = math.atan(y_dist/x_dist)
-        print(math.degrees(y_angle))
 
         x_more = abs((average(x_dists) - x_dist))
         
         F = k_constant*(math.sqrt(bow_height**2+x_more**2)-bow_height)*(math.cos(math.atan(bow_height/x_more)))
         velocity = (F*contact_time)/mass
         
-        # set_data('XY_SLOPE', y_angle)
-        # set_data('VELOCITY', velocity)
+        set_data('XY_SLOPE', y_angle)
+        set_data('VELOCITY', velocity)
     else:
         pass
 

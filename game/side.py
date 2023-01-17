@@ -1,3 +1,4 @@
+import math
 import threading
 import time
 import turtle
@@ -16,20 +17,50 @@ wn.setup(WIDTH, HEIGHT)
 wn.title("Side")
 wn.bgcolor('white')
 
-global x, y, xy_angle, velocity
+global x, y
 
 x = 200
-y = -190
+y = 0
+
+xa = 200
+ya = 0
 
 target = Square(5, 1, "red", X, Y)
 s = Square(4, 1, "orange", x, y)
 aimer = Square(1, 3, "brown", x-20, y)
+arrow = Square(1, 1, "black", xa, ya)
 
 is_running = True
 
-aimer.turn(-45)
+global final_slope
+final_slope = get_data('XY_SLOPE')
+
+global velocity
+velocity = float(get_data('VELOCITY'))
+
+global done
+done = False
+
+global shot
+shot = False
 
 while is_running:
-    if bool(get_data('SHOOT')):
-        pass
+    if done == False:
+        X = get_data('XY_SLOPE')
+        if X:
+            final_slope = float()
+            aimer.turn(float(math.degrees(X)))
+    if bool(get_data("SHOOT")):
+        velocity = float(get_data('VELOCITY'))
+        X = get_data('XY_SLOPE')
+        if X:
+            final_slope = float(X)
+
+        shot = True
+        break
+    wn.update()
+
+while shot:
+    arrow.x_inc(-1)
+    arrow.y_inc(math.tan(final_slope))
     wn.update()
